@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  mlbackend: 
+    container_name: mlbackend-container
+    restart: always
+    build: ./mlbackend
+    ports:
+      - "80:5000"
+    volumes:
+      - ./mlbackend:/MLBackend
+    env_file:
+      - .env  
+
+  backend:
+    container_name: backend-container
+    restart: always
+    build: ./backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/Backend
+    env_file:
+      - .env
+    depends_on:
+      - mlbackend
+
+  client:
+    container_name: client-container
+    restart: always
+    build: ./client
+    ports:
+      - "3000:3000"
+    volumes: 
+      - ./client:/client
+    depends_on:
+      - backend
